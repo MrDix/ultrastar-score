@@ -8,7 +8,15 @@ Score UltraStar karaoke song files against vocal audio tracks using real game al
 
 ## Installation
 
-Requires a C++ compiler (the pitch detection is a compiled C++ extension):
+Pre-built wheels are available for all major platforms (no compiler needed):
+
+| OS | Architectures |
+|----|---------------|
+| **Windows** | x86_64, ARM64 |
+| **Linux** | x86_64, aarch64 |
+| **macOS** | x86_64, arm64 (Apple Silicon) |
+
+Python 3.11, 3.12, and 3.13 are supported.
 
 ```bash
 pip install ultrastar-score
@@ -19,17 +27,9 @@ For MP3 support:
 pip install ultrastar-score[mp3]
 ```
 
-## Build Requirements
+### From source (development)
 
-The C++ ptAKF extension requires a compiler and CMake:
-
-| Platform | Compiler | Install |
-|----------|----------|---------|
-| **Windows** | MSVC Build Tools | `winget install Microsoft.VisualStudio.2022.BuildTools --override "--quiet --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"` |
-| **Linux** | GCC/Clang | `sudo apt install build-essential cmake` (Debian/Ubuntu) |
-| **macOS** | Clang (Xcode) | `xcode-select --install` |
-
-CMake (≥3.18) is also required. On Windows, install via `winget install Kitware.CMake`. On Linux/macOS it's typically included or available via your package manager.
+See [Development](#development) below for build requirements and setup instructions.
 
 ## Usage
 
@@ -99,6 +99,16 @@ Like USDX, detected pitch is octave-folded to within 6 semitones of the expected
 
 ## Development
 
+Building from source requires a C++ compiler and CMake (≥3.18):
+
+| Platform | Compiler | Install |
+|----------|----------|---------|
+| **Windows** | MSVC Build Tools | `winget install Microsoft.VisualStudio.2022.BuildTools --override "--quiet --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"` |
+| **Linux** | GCC/Clang | `sudo apt install build-essential cmake` (Debian/Ubuntu) |
+| **macOS** | Clang (Xcode) | `xcode-select --install` |
+
+CMake (≥3.18) is also required. On Windows, install via `winget install Kitware.CMake`. On Linux/macOS it's typically included or available via your package manager.
+
 ```bash
 git clone https://github.com/MrDix/ultrastar-score
 cd ultrastar-score
@@ -106,13 +116,7 @@ pip install -e ".[dev]"
 pytest
 ```
 
-### Build from source
-
-The C++ extension is built automatically by `pip install`. If you encounter build issues:
-
-1. Ensure a C++ compiler is in your PATH (see Build Requirements above)
-2. Ensure CMake ≥3.18 is installed
-3. Run `pip install -e ".[dev]" -v` for verbose build output
+The C++ extension is built automatically by `pip install`. If you encounter build issues, run `pip install -e ".[dev]" -v` for verbose build output.
 
 ## Algorithm Details
 
@@ -136,6 +140,44 @@ Key parameters:
 - Smoothing: Median filter over 3 consecutive frames
 
 Based on Vocaluxe's C++ implementation (GPL v3).
+
+## Publishing to PyPI (Maintainers)
+
+### One-Time Setup: OIDC Trusted Publishing
+
+The release workflow uses PyPI's [Trusted Publishing](https://docs.pypi.org/trusted-publishers/) (OIDC) so no API tokens are needed.
+
+1. Go to <https://pypi.org> and log in (or create an account).
+2. Navigate to <https://pypi.org/manage/account/publishing/>.
+3. Under **"Add a new pending publisher"**, fill in:
+   - **PyPI project name:** `ultrastar-score`
+   - **Owner:** `MrDix`
+   - **Repository:** `ultrastar-score`
+   - **Workflow name:** `release.yml`
+   - **Environment name:** `pypi`
+4. Click **"Add"**.
+
+This tells PyPI to trust tokens issued by GitHub Actions for this specific repository and workflow.
+
+### Creating a Release
+
+1. Update the version in `pyproject.toml`.
+2. Commit and push to `main`.
+3. Create a GitHub release with a tag matching the version (e.g., `v0.2.0`).
+4. The CI automatically builds wheels for all platforms (Linux x86_64/aarch64, Windows x86_64/ARM64, macOS x86_64/arm64) and publishes to PyPI.
+5. Users can then install with `pip install ultrastar-score`.
+
+### Workflow Requirements
+
+The publish job in `.github/workflows/release.yml` must have these two settings for OIDC to work:
+
+```yaml
+environment: pypi          # must match the environment name on PyPI
+permissions:
+  id-token: write          # allows the job to request an OIDC token
+```
+
+Both are already configured in the current workflow.
 
 ## License
 
