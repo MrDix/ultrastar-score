@@ -29,21 +29,7 @@ pip install ultrastar-score[mp3]
 
 ### From source (development)
 
-```bash
-git clone https://github.com/MrDix/ultrastar-score.git
-cd ultrastar-score
-pip install -e ".[dev]"
-```
-
-Building from source requires a C++ compiler and CMake (≥3.18):
-
-| Platform | Compiler | Install |
-|----------|----------|---------|
-| **Windows** | MSVC Build Tools | `winget install Microsoft.VisualStudio.2022.BuildTools --override "--quiet --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"` |
-| **Linux** | GCC/Clang | `sudo apt install build-essential cmake` (Debian/Ubuntu) |
-| **macOS** | Clang (Xcode) | `xcode-select --install` |
-
-CMake (≥3.18) is also required. On Windows, install via `winget install Kitware.CMake`. On Linux/macOS it's typically included or available via your package manager.
+See [Development](#development) below for build requirements and setup instructions.
 
 ## Usage
 
@@ -113,6 +99,16 @@ Like USDX, detected pitch is octave-folded to within 6 semitones of the expected
 
 ## Development
 
+Building from source requires a C++ compiler and CMake (≥3.18):
+
+| Platform | Compiler | Install |
+|----------|----------|---------|
+| **Windows** | MSVC Build Tools | `winget install Microsoft.VisualStudio.2022.BuildTools --override "--quiet --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"` |
+| **Linux** | GCC/Clang | `sudo apt install build-essential cmake` (Debian/Ubuntu) |
+| **macOS** | Clang (Xcode) | `xcode-select --install` |
+
+CMake (≥3.18) is also required. On Windows, install via `winget install Kitware.CMake`. On Linux/macOS it's typically included or available via your package manager.
+
 ```bash
 git clone https://github.com/MrDix/ultrastar-score
 cd ultrastar-score
@@ -120,13 +116,7 @@ pip install -e ".[dev]"
 pytest
 ```
 
-### Build from source
-
-The C++ extension is built automatically by `pip install`. If you encounter build issues:
-
-1. Ensure a C++ compiler is in your PATH (see Build Requirements above)
-2. Ensure CMake ≥3.18 is installed
-3. Run `pip install -e ".[dev]" -v` for verbose build output
+The C++ extension is built automatically by `pip install`. If you encounter build issues, run `pip install -e ".[dev]" -v` for verbose build output.
 
 ## Algorithm Details
 
