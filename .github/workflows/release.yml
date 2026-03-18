@@ -21,6 +21,13 @@ jobs:
         with:
           python-version: "3.12"
 
+      # QEMU needed for Linux ARM64 cross-compilation
+      - name: Set up QEMU
+        if: runner.os == 'Linux'
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+
       - name: Install cibuildwheel
         run: pip install cibuildwheel==2.22.0
 
@@ -31,10 +38,11 @@ jobs:
           CIBW_SKIP: "*-win32 *-manylinux_i686 *-musllinux_*"
           CIBW_TEST_REQUIRES: "pytest"
           CIBW_TEST_COMMAND: "pytest {project}/tests -x"
-          # macOS: build universal2 wheels (x86_64 + arm64)
           CIBW_ARCHS_MACOS: "x86_64 arm64"
-          CIBW_ARCHS_LINUX: "x86_64"
-          CIBW_ARCHS_WINDOWS: "AMD64"
+          CIBW_ARCHS_LINUX: "x86_64 aarch64"
+          CIBW_ARCHS_WINDOWS: "AMD64 ARM64"
+          # Skip tests on emulated/cross-compiled architectures (no native runner)
+          CIBW_TEST_SKIP: "*-manylinux_aarch64 *-win_arm64"
 
       - uses: actions/upload-artifact@v4
         with:
