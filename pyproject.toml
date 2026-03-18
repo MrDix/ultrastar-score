@@ -44,5 +44,17 @@ cmake.version = ">=3.18"
 wheel.packages = ["src/ultrastar_score"]
 build-dir = "build/{wheel_tag}"
 
+[tool.cibuildwheel]
+build = "cp311-* cp312-* cp313-*"
+skip = "*-win32 *-manylinux_i686 *-musllinux_*"
+test-requires = ["pytest"]
+test-command = "pytest {project}/tests -x"
+
+[tool.cibuildwheel.linux]
+before-build = "pip install pybind11"
+
+[tool.cibuildwheel.macos]
+before-build = "pip install pybind11"
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]

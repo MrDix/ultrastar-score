@@ -8,7 +8,7 @@ Score UltraStar karaoke song files against vocal audio tracks using real game al
 
 ## Installation
 
-Requires a C++ compiler (the pitch detection is a compiled C++ extension):
+Pre-built wheels are available for common platforms (no compiler needed):
 
 ```bash
 pip install ultrastar-score
@@ -19,9 +19,15 @@ For MP3 support:
 pip install ultrastar-score[mp3]
 ```
 
-## Build Requirements
+### From source (development)
 
-The C++ ptAKF extension requires a compiler and CMake:
+```bash
+git clone https://github.com/MrDix/ultrastar-score.git
+cd ultrastar-score
+pip install -e ".[dev]"
+```
+
+Building from source requires a C++ compiler and CMake (≥3.18):
 
 | Platform | Compiler | Install |
 |----------|----------|---------|
