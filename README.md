@@ -8,7 +8,15 @@ Score UltraStar karaoke song files against vocal audio tracks using real game al
 
 ## Installation
 
-Pre-built wheels are available for common platforms (no compiler needed):
+Pre-built wheels are available for all major platforms (no compiler needed):
+
+| OS | Architectures |
+|----|---------------|
+| **Windows** | x86_64, ARM64 |
+| **Linux** | x86_64, aarch64 |
+| **macOS** | x86_64, arm64 (Apple Silicon) |
+
+Python 3.11, 3.12, and 3.13 are supported.
 
 ```bash
 pip install ultrastar-score
@@ -166,7 +174,7 @@ This tells PyPI to trust tokens issued by GitHub Actions for this specific repos
 1. Update the version in `pyproject.toml`.
 2. Commit and push to `main`.
 3. Create a GitHub release with a tag matching the version (e.g., `v0.2.0`).
-4. The CI automatically builds wheels for all platforms (Linux, Windows, macOS) and publishes to PyPI.
+4. The CI automatically builds wheels for all platforms (Linux x86_64/aarch64, Windows x86_64/ARM64, macOS x86_64/arm64) and publishes to PyPI.
 5. Users can then install with `pip install ultrastar-score`.
 
 ### Workflow Requirements
