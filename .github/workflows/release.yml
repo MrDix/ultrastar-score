@@ -88,3 +88,7 @@ jobs:
         # image by ref, and only selected commits have published images.
         # Using release/v1 (latest stable v1.x) as recommended by pypa.
         uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          # scikit-build-core generates Metadata-Version 2.4 which the
+          # bundled check doesn't recognize yet; metadata is valid per PEP 643
+          verify-metadata: false
