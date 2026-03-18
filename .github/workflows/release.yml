@@ -84,4 +84,8 @@ jobs:
           merge-multiple: true
 
       - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@106e0b0b7c337fa67ed433972f777c6357f78598 # v1.13.0
+        uses: pypa/gh-action-pypi-publish@4bb033805d9e19112d8c697528791ff53f6c2f74 # v1.9.0
+        with:
+          # scikit-build-core generates Metadata-Version 2.4 which v1.9.0
+          # doesn't recognize yet; the metadata is valid per PEP 643
+          verify-metadata: false
