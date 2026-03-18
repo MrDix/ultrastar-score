@@ -143,6 +143,44 @@ Key parameters:
 
 Based on Vocaluxe's C++ implementation (GPL v3).
 
+## Publishing to PyPI (Maintainers)
+
+### One-Time Setup: OIDC Trusted Publishing
+
+The release workflow uses PyPI's [Trusted Publishing](https://docs.pypi.org/trusted-publishers/) (OIDC) so no API tokens are needed.
+
+1. Go to <https://pypi.org> and log in (or create an account).
+2. Navigate to <https://pypi.org/manage/account/publishing/>.
+3. Under **"Add a new pending publisher"**, fill in:
+   - **PyPI project name:** `ultrastar-score`
+   - **Owner:** `MrDix`
+   - **Repository:** `ultrastar-score`
+   - **Workflow name:** `release.yml`
+   - **Environment name:** `pypi`
+4. Click **"Add"**.
+
+This tells PyPI to trust tokens issued by GitHub Actions for this specific repository and workflow.
+
+### Creating a Release
+
+1. Update the version in `pyproject.toml`.
+2. Commit and push to `main`.
+3. Create a GitHub release with a tag matching the version (e.g., `v0.2.0`).
+4. The CI automatically builds wheels for all platforms (Linux, Windows, macOS) and publishes to PyPI.
+5. Users can then install with `pip install ultrastar-score`.
+
+### Workflow Requirements
+
+The publish job in `.github/workflows/release.yml` must have these two settings for OIDC to work:
+
+```yaml
+environment: pypi          # must match the environment name on PyPI
+permissions:
+  id-token: write          # allows the job to request an OIDC token
+```
+
+Both are already configured in the current workflow.
+
 ## License
 
 GPL-3.0-or-later (due to Vocaluxe ptAKF code)
