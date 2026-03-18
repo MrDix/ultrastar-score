@@ -28,6 +28,17 @@ class TestPitchDetector:
         median_tone = sorted(tones)[len(tones) // 2]
         assert abs(median_tone - 33) <= 1, f"Expected ~33 (A4), got {median_tone}"
 
+    def test_detect_c3(self):
+        """Detect C3 (130.81 Hz) = ptAKF tone 12."""
+        audio = self._generate_sine(130.81, duration=0.5)
+        detector = PitchDetector(sample_rate=44100)
+        results = detector.detect_all(audio)
+
+        tones = [r["tone"] for r in results if r["tone"] >= 0]
+        assert len(tones) > 0
+        median_tone = sorted(tones)[len(tones) // 2]
+        assert abs(median_tone - 12) <= 1, f"Expected ~12 (C3), got {median_tone}"
+
     def test_detect_e4(self):
         """Detect E4 (329.63 Hz) = ptAKF tone 28."""
         audio = self._generate_sine(329.63, duration=0.5)

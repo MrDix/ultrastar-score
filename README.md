@@ -2,11 +2,13 @@
 
 Score UltraStar karaoke song files against vocal audio tracks using real game algorithms.
 
-- **Pitch detection**: Vocaluxe ptAKF (AKF/AMDF hybrid autocorrelation)
+- **Pitch detection**: Vocaluxe ptAKF C++ extension (AKF/AMDF hybrid autocorrelation)
 - **Scoring**: USDX-compatible (10000-point scale with line bonus)
 - **Difficulty levels**: Easy (±2 ST), Medium (±1 ST), Hard (exact match), or custom tolerance
 
 ## Installation
+
+Requires a C++ compiler (the pitch detection is a compiled C++ extension):
 
 ```bash
 pip install ultrastar-score
@@ -16,6 +18,18 @@ For MP3 support:
 ```bash
 pip install ultrastar-score[mp3]
 ```
+
+## Build Requirements
+
+The C++ ptAKF extension requires a compiler and CMake:
+
+| Platform | Compiler | Install |
+|----------|----------|---------|
+| **Windows** | MSVC Build Tools | `winget install Microsoft.VisualStudio.2022.BuildTools --override "--quiet --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"` |
+| **Linux** | GCC/Clang | `sudo apt install build-essential cmake` (Debian/Ubuntu) |
+| **macOS** | Clang (Xcode) | `xcode-select --install` |
+
+CMake (≥3.18) is also required. On Windows, install via `winget install Kitware.CMake`. On Linux/macOS it's typically included or available via your package manager.
 
 ## Usage
 
@@ -92,6 +106,14 @@ pip install -e ".[dev]"
 pytest
 ```
 
+### Build from source
+
+The C++ extension is built automatically by `pip install`. If you encounter build issues:
+
+1. Ensure a C++ compiler is in your PATH (see Build Requirements above)
+2. Ensure CMake ≥3.18 is installed
+3. Run `pip install -e ".[dev]" -v` for verbose build output
+
 ## Algorithm Details
 
 ### Pitch Detection (ptAKF)
@@ -102,13 +124,18 @@ The pitch detection uses the combined AKF/AMDF method (Kobayashi & Shimamura, 20
 f(τ) = AKF(τ) / (AMDF(τ) + 1)
 ```
 
+This is a **compiled C++ extension** — there is no Python fallback. This is intentional: ultrastar-score is designed as an **independent validation tool** for UltraStar song generators. Using a completely different pitch detection algorithm (Vocaluxe ptAKF) from the generator (e.g., UltraSinger's SwiftF0) ensures that systematic pitch detection errors are caught rather than masked.
+
+Key parameters:
+
 - Window: 2048 samples with Hamming window
 - Hop: 1024 samples (~23ms at 44.1kHz)
 - Range: C2 (65.4 Hz) to G#6 (~1661 Hz)
-- Smoothing: Median filter over 3 consecutive frames
+- Fine-tuning: ±1/3 semitone sub-resolution
 - Validation: AKF at detected lag must be ≥33% of signal energy
+- Smoothing: Median filter over 3 consecutive frames
 
-Based on Vocaluxe's C++ implementation.
+Based on Vocaluxe's C++ implementation (GPL v3).
 
 ## License
 

@@ -1,10 +1,10 @@
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["scikit-build-core>=0.10", "pybind11>=2.13"]
+build-backend = "scikit_build_core.build"
 
 [project]
 name = "ultrastar-score"
-version = "0.1.0"
+version = "0.2.0"
 description = "Score UltraStar karaoke files against vocal audio using Vocaluxe pitch detection and USDX scoring"
 readme = "README.md"
 license = "GPL-3.0-or-later"
@@ -35,16 +35,14 @@ dev = [
 mp3 = [
     "audioread>=3.0",
 ]
-native = [
-    "scikit-build-core>=0.10",
-    "pybind11>=2.13",
-]
 
 [project.scripts]
 uscore = "ultrastar_score.cli:main"
 
-[tool.hatch.build.targets.wheel]
-packages = ["src/ultrastar_score"]
+[tool.scikit-build]
+cmake.version = ">=3.18"
+wheel.packages = ["src/ultrastar_score"]
+build-dir = "build/{wheel_tag}"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
