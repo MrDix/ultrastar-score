@@ -84,8 +84,7 @@ jobs:
           merge-multiple: true
 
       - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@4bb033805d9e19112d8c697528791ff53f6c2f74 # v1.9.0
-        with:
-          # scikit-build-core generates Metadata-Version 2.4 which v1.9.0
-          # doesn't recognize yet; the metadata is valid per PEP 643
-          verify-metadata: false
+        # NOTE: Cannot pin to commit SHA — this action pulls its Docker
+        # image by ref, and only selected commits have published images.
+        # Using release/v1 (latest stable v1.x) as recommended by pypa.
+        uses: pypa/gh-action-pypi-publish@release/v1
