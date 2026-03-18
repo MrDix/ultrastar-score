@@ -52,6 +52,7 @@ test-command = "pytest {project}/tests -x"
 
 [tool.cibuildwheel.linux]
 before-build = "pip install pybind11"
+before-test = "yum install -y libsndfile || apt-get install -y libsndfile1 || true"
 
 [tool.cibuildwheel.macos]
 before-build = "pip install pybind11"
